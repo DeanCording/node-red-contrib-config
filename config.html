@@ -16,11 +16,11 @@
 
 <script type="text/x-red" data-template-name="config">
     <div class="form-row">
-        <label for="node-input-name"><i class="fa fa-tag"></i> <span data-i18n="common.label.name"></span></label>
-        <input type="text" id="node-input-name" data-i18n="[placeholder]common.label.name">
+        <label for="node-input-name"><i class="fa fa-tag"></i> Name</span></label>
+        <input type="text" id="node-input-name">
     </div>
     <div class="form-row" style="margin-bottom:0;">
-        <label><i class="fa fa-list"></i> <span data-i18n="change.label.rules"></span></label>
+        <label><i class="fa fa-list"></i> Rules</span></label>
     </div>
     <div class="form-row node-input-rule-container-row">
         <ol id="node-input-rule-container"></ol>
@@ -43,7 +43,7 @@
 
 <script type="text/javascript">
     RED.nodes.registerType('config', {
-        color: "#E2D96E",
+        color: "#62796E",
         category: 'function',
         defaults: {
             name: {value:""},
