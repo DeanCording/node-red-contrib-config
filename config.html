@@ -67,7 +67,7 @@
                     var row1 = $('<div/>').appendTo(container);
                     var row2 = $('<div/>',{style:"margin-top:8px;"}).appendTo(container);
 
-                    var selectField = $('<label/>',{for:"node-input-config-property-name",style:"width:110px; margin-right:10px;"}).text("Property").appendTo(row1);
+                    $('<label/>',{for:"node-input-config-property-name",style:"width:110px; margin-right:10px;"}).text("Property").appendTo(row1);
 
                     var propertyName = $('<input/>',{style:"width:250px",class:"node-input-config-property-name",type:"text"})
                         .appendTo(row1)
@@ -76,7 +76,8 @@
                     $('<div/>',{style:"display:inline-block;text-align:right; width:120px; padding-right:10px; box-sizing:border-box;"})
                         .text("Value")
                         .appendTo(row2);
-                    var propertyValue = $('<input/>',{style:"width:250px",class:"node-input-config-property-value",type:"text"})
+                    $('<input/>',{style:"width:270px",class:"node-input-config-property-value",type:"text"})
+                        .val(config.to)
                         .appendTo(row2);
 
                     propertyName.typedInput('value',config.p);
@@ -102,7 +103,6 @@
             node.configs= [];
             configs.each(function(i) {
                 var config = $(this);
-                var type = config.find(".node-input-config-type").val();
                 var r = {
                     p:config.find(".node-input-config-property-name").typedInput('value'),
                     pt:config.find(".node-input-config-property-name").typedInput('type'),
