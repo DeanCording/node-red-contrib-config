@@ -26,13 +26,21 @@ module.exports = function(RED) {
     function ConfigNode(n) {
         RED.nodes.createNode(this, n);
 
-        var node = this;
-
-        node.configs = n.configs;
-
-        function applyConfig(config) {
-            var property = config.p;
-            var value = config.to;
+        n.configs.forEach( function(config) {
+            if (config.tot === 'num') {
+                config.to = Number(config.to);
+            } else if (config.tot === 'json') {
+                try {
+                    config.to = JSON.parse(config.to);
+                } catch(e2) {
+                    this.error("Invalid JSON");
+                    return;
+                }
+            } else if (rule.tot === 'bool') {
+                config.to = /^true$/i.test(rule.to);
+            } else if (rule.tot === 'date') {
+                config.to = Date.now();
+            }
 
             var target;
             if (config.pt === 'flow') {
@@ -41,13 +49,10 @@ module.exports = function(RED) {
                 target = node.context().global;
             }
             if (target) {
-                target.set(property,value);
+                target.set(config.p,config.to);
             }
         }
 
-        for (var i=0;i < node.configs.length;i++) {
-            applyConfig(node.configs[i]);
-        }
     }
     RED.nodes.registerType("config", ConfigNode);
 };

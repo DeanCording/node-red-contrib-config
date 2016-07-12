@@ -39,7 +39,7 @@
         category: 'function',
         defaults: {
             name: {value:""},
-            configs:{value:[{p:"",pt:"flow",to:""}]},
+            configs:{value:[{p:"",pt:"flow",to:"",tot:"str"}]},
         },
         inputs: 0,
         outputs: 0,
@@ -61,7 +61,7 @@
                 addItem: function(container,i,opt) {
                     var config = opt;
                     if (!config.hasOwnProperty('p')) {
-                        config = {p:"",pt:"flow",to:""};
+                        config = {p:"",pt:"flow",to:"",tot:"string"};
                     }
 
                     var row1 = $('<div/>').appendTo(container);
@@ -76,12 +76,14 @@
                     $('<div/>',{style:"display:inline-block;text-align:right; width:120px; padding-right:10px; box-sizing:border-box;"})
                         .text("Value")
                         .appendTo(row2);
-                    $('<input/>',{style:"width:270px",class:"node-input-config-property-value",type:"text"})
-                        .val(config.to)
-                        .appendTo(row2);
+                    var propertyValue = $('<input/>',{style:"width:270px",class:"node-input-config-property-value",type:"text"})
+                        .appendTo(row2)
+                        .typedInput({types:['str','num','bool','json','date']});
 
                     propertyName.typedInput('value',config.p);
                     propertyName.typedInput('type',config.pt);
+                    propertyValue.typedInput('value',rule.to);
+                    propertyValue.typedInput('type',rule.tot);
 
                     var newWidth = $("#node-input-config-container").width();
                     resizeConfig(container);
@@ -106,7 +108,8 @@
                 var r = {
                     p:config.find(".node-input-config-property-name").typedInput('value'),
                     pt:config.find(".node-input-config-property-name").typedInput('type'),
-                    to:config.find(".node-input-config-property-value").val(),
+                    to:config.find(".node-input-config-property-value").typedInput('value'),
+                    tot:config.find(".node-input-config-property-value").typedInput('type')
                 };
                 node.configs.push(r);
             });
@@ -121,6 +124,29 @@
             height -= (parseInt(editorRow.css("marginTop"))+parseInt(editorRow.css("marginBottom")));
 
             $("#node-input-config-container").editableList('height',height);
+        },
+        button: {
+            onclick: function() {
+                var node = this;
+                $.ajax({
+                    url: "config/"+this.id,
+                    type:"POST",
+                    success: function(resp) {
+                        RED.notify("Configuration reset","success");
+                    },
+                    error: function(jqXHR,textStatus,errorThrown) {
+                        if (jqXHR.status == 404) {
+                            RED.notify("Node not deployed","error");
+                        } else if (jqXHR.status == 500) {
+                            RED.notify("Configuration reset failed","error");
+                        } else if (jqXHR.status == 0) {
+                            RED.notify("No response","error");
+                        } else {
+                            RED.notify("Error:",{message:"Unexpected error",{status:jqXHR.status,message:textStatus})}),"error");
+                        }
+                    }
+                });
+            }
         }
     });
 </script>
