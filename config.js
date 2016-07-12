@@ -26,7 +26,9 @@ module.exports = function(RED) {
     function ConfigNode(n) {
         RED.nodes.createNode(this, n);
 
-        this.configs = n.configs;
+        var node = this;
+
+        node.configs = n.configs;
 
         function applyConfig(config) {
             var property = config.p;
@@ -43,8 +45,8 @@ module.exports = function(RED) {
             }
         }
 
-        for (var i=0;i<this.configs.length;i++) {
-            applyConfig(this.configs[i]);
+        for (var i=0;i < node.configs.length;i++) {
+            applyConfig(node.configs[i]);
         }
     }
     RED.nodes.registerType("config", ConfigNode);
