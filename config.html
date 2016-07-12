@@ -28,17 +28,9 @@
 </script>
 
 <script type="text/x-red" data-help-name="config">
-    <p>Set, change, delete or move properties of a message, flow context or global context.</p>
-    <p>The node can specify multiple configs that will be applied in turn.</p>
-    <p>The available operations are:</p>
-    <ul>
-        <li><b>Set</b> - set a property. The value can be a variety of different types, or
-            can be taken from an existing message or context property.</li>
-        <li><b>Change</b> - search &amp; replace parts of the property. If regular expressions
-            are enabled, the <b>replace with</b> property can include capture groups, for example <code>$1</code></li>
-        <li><b>Delete</b> - delete a property.</li>
-        <li><b>Move</b> - move or rename a property. Equivalent to set and delete in one operation.
-    </ul>
+    <p>Set flow context or global context properties on start up.</p>
+    <p>Allows configuration values to be loaded into the flow or global
+    contexts at start up.</p>
 </script>
 
 <script type="text/javascript">
@@ -47,17 +39,11 @@
         category: 'function',
         defaults: {
             name: {value:""},
-            configs:{value:[{p:"payload",pt:"msg",to:"",tot:"str"}]},
-            // legacy
-            action: {value:""},
-            property: {value:""},
-            from: {value:""},
-            to: {value:""},
-            reg: {value:false}
+            configs:{value:[{p:"",pt:"flow",to:""}]},
         },
         inputs: 0,
         outputs: 0,
-        icon: "swap.png",
+        icon: "inject.png",
         label: function() {
                 return this.name || "Config";
         },
@@ -65,14 +51,6 @@
             return this.name ? "node_label_italic" : "";
         },
         oneditprepare: function() {
-            var set = this._("change.action.set");
-            var change = this._("change.action.change");
-            var del = this._("change.action.delete");
-            var move = this._("change.action.move");
-            var to = this._("change.action.to");
-            var search = this._("change.action.search");
-            var replace = this._("change.action.replace");
-            var regex = this._("change.label.regex");
 
             function resizeConfig(config) {
                 var newWidth = config.width();
@@ -82,23 +60,12 @@
             $('#node-input-config-container').css('min-height','300px').css('min-width','450px').editableList({
                 addItem: function(container,i,opt) {
                     var config = opt;
-                    if (!config.hasOwnProperty('t')) {
-                        config = {t:"set",p:"payload",to:"",tot:"str"};
-                    }
-                    if (config.to.indexOf("msg.") === 0 && !config.tot) {
-                        config.to = config.to.substring(4);
-                        config.tot = "msg";
-                    } else {
-                            config.tot = "str";
-                    }
-                    if (config.t === "move" && !config.tot) {
-                        config.tot = "msg";
+                    if (!config.hasOwnProperty('p')) {
+                        config = {p:"",pt:"flow",to:""};
                     }
 
                     var row1 = $('<div/>').appendTo(container);
                     var row2 = $('<div/>',{style:"margin-top:8px;"}).appendTo(container);
-                    var row3 = $('<div/>',{style:"margin-top:8px;"}).appendTo(container);
-                    var row4 = $('<div/>',{style:"margin-top:8px;"}).appendTo(container);
 
                     var selectField = $('<label/>',{for:"node-input-config-property-name",style:"width:110px; margin-right:10px;"}).text("Property").appendTo(row1);
 
@@ -107,7 +74,7 @@
                         .typedInput({types:['flow','global']});
 
                     $('<div/>',{style:"display:inline-block;text-align:right; width:120px; padding-right:10px; box-sizing:border-box;"})
-                        .text(to)
+                        .text("Value")
                         .appendTo(row2);
                     var propertyValue = $('<input/>',{style:"width:250px",class:"node-input-config-property-value",type:"text"})
                         .appendTo(row2);
@@ -121,25 +88,8 @@
                 },
                 resizeItem: resizeConfig,
                 removable: true,
-                sortable: true
+                sortable: false
             });
-
-            if (!this.configs) {
-                var config = {
-                    p:this.property,
-                    pt:"msg"
-                }
-
-                config.to = this.to;
-
-                delete this.to;
-                delete this.from;
-                delete this.reg;
-                delete this.action;
-                delete this.property;
-
-                this.configs = [config];
-            }
 
             for (var i=0;i<this.configs.length;i++) {
                 var config = this.configs[i];
@@ -159,7 +109,6 @@
                     p:config.find(".node-input-config-property-name").typedInput('value'),
                     pt:config.find(".node-input-config-property-name").typedInput('type'),
                     to:config.find(".node-input-config-property-value").typedInput('value'),
-                    tot:config.find(".node-input-config-property-value").typedInput('type')
                 };
                 node.configs.push(r);
             });
