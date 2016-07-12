@@ -44,7 +44,7 @@ module.exports = function(RED) {
         }
 
         for (var i=0;i<this.configs.length;i++) {
-            msg = applyConfig(msg,this.configs[i]);
+            applyConfig(this.configs[i]);
         }
     }
     RED.nodes.registerType("config", ConfigNode);
