@@ -104,10 +104,9 @@
                 var config = $(this);
                 var type = config.find(".node-input-config-type").val();
                 var r = {
-                    t:type,
                     p:config.find(".node-input-config-property-name").typedInput('value'),
                     pt:config.find(".node-input-config-property-name").typedInput('type'),
-                    to:config.find(".node-input-config-property-value").typedInput('value'),
+                    to:config.find(".node-input-config-property-value").val(),
                 };
                 node.configs.push(r);
             });
