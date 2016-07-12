@@ -20,97 +20,97 @@ module.exports = function(RED) {
     function ConfigNode(n) {
         RED.nodes.createNode(this, n);
 
-        this.rules = n.rules;
-        if (!this.rules) {
-            var rule = {
+        this.configs = n.configs;
+        if (!this.configs) {
+            var config = {
                 t:(n.action=="replace"?"set":n.action),
                 p:n.property||""
             }
 
-            if ((rule.t === "set")||(rule.t === "move")) {
-                rule.to = n.to||"";
-            } else if (rule.t === "change") {
-                rule.from = n.from||"";
-                rule.to = n.to||"";
-                rule.re = (n.reg===null||n.reg);
+            if ((config.t === "set")||(config.t === "move")) {
+                config.to = n.to||"";
+            } else if (config.t === "change") {
+                config.from = n.from||"";
+                config.to = n.to||"";
+                config.re = (n.reg===null||n.reg);
             }
-            this.rules = [rule];
+            this.configs = [config];
         }
 
         var valid = true;
-        for (var i=0;i<this.rules.length;i++) {
-            var rule = this.rules[i];
-            // Migrate to type-aware rules
-            if (!rule.pt) {
-                rule.pt = "msg";
+        for (var i=0;i<this.configs.length;i++) {
+            var config = this.configs[i];
+            // Migrate to type-aware configs
+            if (!config.pt) {
+                config.pt = "msg";
             }
-            if (rule.t === "change" && rule.re) {
-                rule.fromt = 're';
-                delete rule.re;
+            if (config.t === "change" && config.re) {
+                config.fromt = 're';
+                delete config.re;
             }
-            if (rule.t === "set" && !rule.tot) {
-                if (rule.to.indexOf("msg.") === 0 && !rule.tot) {
-                    rule.to = rule.to.substring(4);
-                    rule.tot = "msg";
+            if (config.t === "set" && !config.tot) {
+                if (config.to.indexOf("msg.") === 0 && !config.tot) {
+                    config.to = config.to.substring(4);
+                    config.tot = "msg";
                 }
             }
-            if (!rule.tot) {
-                rule.tot = "str";
+            if (!config.tot) {
+                config.tot = "str";
             }
-            if (!rule.fromt) {
-                rule.fromt = "str";
+            if (!config.fromt) {
+                config.fromt = "str";
             }
-            if (rule.t === "change" && rule.fromt !== 'msg' && rule.fromt !== 'flow' && rule.fromt !== 'global') {
-                rule.fromRE = rule.from;
-                if (rule.fromt !== 're') {
-                    rule.fromRE = rule.fromRE.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
+            if (config.t === "change" && config.fromt !== 'msg' && config.fromt !== 'flow' && config.fromt !== 'global') {
+                config.fromRE = config.from;
+                if (config.fromt !== 're') {
+                    config.fromRE = config.fromRE.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
                 }
                 try {
-                    rule.fromRE = new RegExp(rule.fromRE, "g");
+                    config.fromRE = new RegExp(config.fromRE, "g");
                 } catch (e) {
                     valid = false;
                     this.error(RED._("change.errors.invalid-from",{error:e.message}));
                 }
             }
-            if (rule.tot === 'num') {
-                rule.to = Number(rule.to);
-            } else if (rule.tot === 'json') {
+            if (config.tot === 'num') {
+                config.to = Number(config.to);
+            } else if (config.tot === 'json') {
                 try {
-                    rule.to = JSON.parse(rule.to);
+                    config.to = JSON.parse(config.to);
                 } catch(e2) {
                     valid = false;
                     this.error(RED._("change.errors.invalid-json"));
                 }
-            } else if (rule.tot === 'bool') {
-                rule.to = /^true$/i.test(rule.to);
+            } else if (config.tot === 'bool') {
+                config.to = /^true$/i.test(config.to);
             }
         }
 
-        function applyRule(msg,rule) {
+        function applyConfig(msg,config) {
             try {
-                var property = rule.p;
-                var value = rule.to;
+                var property = config.p;
+                var value = config.to;
                 var current;
                 var fromValue;
                 var fromType;
                 var fromRE;
-                if (rule.tot === "msg") {
-                    value = RED.util.getMessageProperty(msg,rule.to);
-                } else if (rule.tot === 'flow') {
-                    value = node.context().flow.get(rule.to);
-                } else if (rule.tot === 'global') {
-                    value = node.context().global.get(rule.to);
-                } else if (rule.tot === 'date') {
+                if (config.tot === "msg") {
+                    value = RED.util.getMessageProperty(msg,config.to);
+                } else if (config.tot === 'flow') {
+                    value = node.context().flow.get(config.to);
+                } else if (config.tot === 'global') {
+                    value = node.context().global.get(config.to);
+                } else if (config.tot === 'date') {
                     value = Date.now();
                 }
-                if (rule.t === 'change') {
-                    if (rule.fromt === 'msg' || rule.fromt === 'flow' || rule.fromt === 'global') {
-                        if (rule.fromt === "msg") {
-                            fromValue = RED.util.getMessageProperty(msg,rule.from);
-                        } else if (rule.tot === 'flow') {
-                            fromValue = node.context().flow.get(rule.from);
-                        } else if (rule.tot === 'global') {
-                            fromValue = node.context().global.get(rule.from);
+                if (config.t === 'change') {
+                    if (config.fromt === 'msg' || config.fromt === 'flow' || config.fromt === 'global') {
+                        if (config.fromt === "msg") {
+                            fromValue = RED.util.getMessageProperty(msg,config.from);
+                        } else if (config.tot === 'flow') {
+                            fromValue = node.context().flow.get(config.from);
+                        } else if (config.tot === 'global') {
+                            fromValue = node.context().global.get(config.from);
                         }
                         if (typeof fromValue === 'number' || fromValue instanceof Number) {
                             fromType = 'num';
@@ -134,17 +134,17 @@ module.exports = function(RED) {
                             return
                         }
                     } else {
-                        fromType = rule.fromt;
-                        fromValue = rule.from;
-                        fromRE = rule.fromRE;
+                        fromType = config.fromt;
+                        fromValue = config.from;
+                        fromRE = config.fromRE;
                     }
                 }
-                if (rule.pt === 'msg') {
-                    if (rule.t === 'delete') {
+                if (config.pt === 'msg') {
+                    if (config.t === 'delete') {
                         RED.util.setMessageProperty(msg,property,undefined);
-                    } else if (rule.t === 'set') {
+                    } else if (config.t === 'set') {
                         RED.util.setMessageProperty(msg,property,value);
-                    } else if (rule.t === 'change') {
+                    } else if (config.t === 'change') {
                         current = RED.util.getMessageProperty(msg,property);
                         if (typeof current === 'string') {
                             if ((fromType === 'num' || fromType === 'bool') && current === fromValue) {
@@ -167,17 +167,17 @@ module.exports = function(RED) {
                     }
                 } else {
                     var target;
-                    if (rule.pt === 'flow') {
+                    if (config.pt === 'flow') {
                         target = node.context().flow;
-                    } else if (rule.pt === 'global') {
+                    } else if (config.pt === 'global') {
                         target = node.context().global;
                     }
                     if (target) {
-                        if (rule.t === 'delete') {
+                        if (config.t === 'delete') {
                             target.set(property,undefined);
-                        } else if (rule.t === 'set') {
+                        } else if (config.t === 'set') {
                             target.set(property,value);
-                        } else if (rule.t === 'change') {
+                        } else if (config.t === 'change') {
                             current = target.get(msg,property);
                             if (typeof current === 'string') {
                                 if ((fromType === 'num' || fromType === 'bool') && current === fromValue) {
@@ -206,13 +206,13 @@ module.exports = function(RED) {
         if (valid) {
             var node = this;
             this.on('input', function(msg) {
-                for (var i=0;i<this.rules.length;i++) {
-                    if (this.rules[i].t === "move") {
-                        var r = this.rules[i];
-                        msg = applyRule(msg,{t:"set", p:r.to, pt:r.tot, to:r.p, tot:r.pt});
-                        applyRule(msg,{t:"delete", p:r.p, pt:r.pt});
+                for (var i=0;i<this.configs.length;i++) {
+                    if (this.configs[i].t === "move") {
+                        var r = this.configs[i];
+                        msg = applyConfig(msg,{t:"set", p:r.to, pt:r.tot, to:r.p, tot:r.pt});
+                        applyConfig(msg,{t:"delete", p:r.p, pt:r.pt});
                     } else {
-                        msg = applyRule(msg,this.rules[i]);
+                        msg = applyConfig(msg,this.configs[i]);
                     }
                     if (msg === null) {
                         return;
