@@ -127,7 +127,6 @@
         },
         button: {
             onclick: function() {
-                var node = this;
                 $.ajax({
                     url: "config/"+this.id,
                     type:"POST",
@@ -142,7 +141,7 @@
                         } else if (jqXHR.status == 0) {
                             RED.notify("No response","error");
                         } else {
-                            RED.notify("Error:",{message:"Unexpected error",{status:jqXHR.status,message:textStatus})}),"error");
+                            RED.notify("Unexpected error " + textStatus,"error");
                         }
                     }
                 });

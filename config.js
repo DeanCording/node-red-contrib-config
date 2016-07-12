@@ -26,6 +26,8 @@ module.exports = function(RED) {
     function ConfigNode(n) {
         RED.nodes.createNode(this, n);
 
+        var node = this;
+
         n.configs.forEach( function(config) {
             if (config.tot === 'num') {
                 config.to = Number(config.to);
@@ -36,9 +38,9 @@ module.exports = function(RED) {
                     this.error("Invalid JSON");
                     return;
                 }
-            } else if (rule.tot === 'bool') {
+            } else if (config.tot === 'bool') {
                 config.to = /^true$/i.test(rule.to);
-            } else if (rule.tot === 'date') {
+            } else if (config.tot === 'date') {
                 config.to = Date.now();
             }
 
@@ -51,8 +53,7 @@ module.exports = function(RED) {
             if (target) {
                 target.set(config.p,config.to);
             }
-        }
-
+        });
     }
     RED.nodes.registerType("config", ConfigNode);
 };
