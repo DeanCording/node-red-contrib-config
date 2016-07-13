@@ -43,14 +43,14 @@ module.exports = function(RED) {
                     }
                 } else if (property.tot === 'bool') {
                     property.to = /^true$/i.test(property.to);
-                } else if (config.tot === 'date') {
+                } else if (property.tot === 'date') {
                     property.to = Date.now();
                 }
 
                 if (property.pt === 'flow') {
-                    target = node.context().flow.set(property.p,property.to);
+                    node.context().flow.set(property.p,property.to);
                 } else if (property.pt === 'global') {
-                    target = node.context().global.set(property.p,property.to);
+                    node.context().global.set(property.p,property.to);
                 }
             });
         };
