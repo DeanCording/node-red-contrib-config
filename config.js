@@ -33,26 +33,12 @@ module.exports = function(RED) {
         node.configure = function(node) {
             node.properties.forEach( function(property) {
 
-                RED.util.evaluateNodeProperty(property.to, property.tot, node, msg)
-                if (property.tot === 'num') {
-                    property.to = Number(property.to);
-                } else if (property.tot === 'json') {
-                    try {
-                        property.to = JSON.parse(property.to);
-                    } catch(e2) {
-                        this.error("Invalid JSON");
-                        return;
-                    }
-                } else if (property.tot === 'bool') {
-                    property.to = /^true$/i.test(property.to);
-                } else if (property.tot === 'date') {
-                    property.to = Date.now();
-                }
+                var value = RED.util.evaluateNodeProperty(property.to, property.tot, node, null)
 
                 if (property.pt === 'flow') {
-                    node.context().flow.set(property.p,property.to);
+                    node.context().flow.set(property.p,value);
                 } else if (property.pt === 'global') {
-                    node.context().global.set(property.p,property.to);
+                    node.context().global.set(property.p,value);
                 }
             });
         };
