@@ -30,7 +30,7 @@ module.exports = function(RED) {
 
         node.configs = n.configs;
 
-        configure(node);
+        if (n.active) configure(node);
 
     };
 
@@ -64,4 +64,20 @@ module.exports = function(RED) {
         });
     }
     RED.nodes.registerType("config", ConfigNode);
+
+    RED.httpAdmin.post("/config/:id", RED.auth.needsPermission("config.write"), function(req,res) {
+        var node = RED.nodes.getNode(req.params.id);
+        if (node != null) {
+            try {
+                node.configure(node);
+                res.sendStatus(200);
+            } catch(err) {
+                res.sendStatus(500);
+                node.error("Config failed: "+ err.toString());
+            }
+        } else {
+            res.sendStatus(404);
+        }
+    });
+
 };

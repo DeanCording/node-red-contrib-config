@@ -22,6 +22,10 @@
     <div class="form-row" style="margin-bottom:0;">
         <label><i class="fa fa-list"></i> Config</span></label>
     </div>
+    <div class="form-row">
+        <label for="node-input-active"><i class="fa fa-check-square"></i> Active</label>
+        <input type="checkbox" checked value="true" id="node-input-active" style="display: inline-block; width: auto; vertical-align: top;"/>
+    </div>
     <div class="form-row node-input-config-container-row">
         <ol id="node-input-config-container"></ol>
     </div>
@@ -40,6 +44,7 @@
         defaults: {
             name: {value:""},
             configs:{value:[{p:"",pt:"flow",to:"",tot:"str"}]},
+            active:{value:true}
         },
         inputs: 0,
         outputs: 0,
