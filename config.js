@@ -28,7 +28,15 @@ module.exports = function(RED) {
 
         var node = this;
 
-        n.configs.forEach( function(config) {
+        node.configs = n.configs;
+
+        configure(node);
+
+    };
+
+    function configure(node) {
+
+        node.configs.forEach( function(config) {
             if (config.tot === 'num') {
                 config.to = Number(config.to);
             } else if (config.tot === 'json') {
