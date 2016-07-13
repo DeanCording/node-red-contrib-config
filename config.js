@@ -57,11 +57,8 @@ module.exports = function(RED) {
                     target.set(config.p,config.to);
                 }
             });
-
-            if (n.active) node.configure(node);
-
         };
-
+        if (n.active) node.configure(node);
     }
     RED.nodes.registerType("config", ConfigNode);
 
