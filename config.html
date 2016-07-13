@@ -32,9 +32,19 @@
 </script>
 
 <script type="text/x-red" data-help-name="config">
-    <p>Set flow context or global context properties on start up.</p>
-    <p>Allows configuration values to be loaded into the flow or global
-    contexts at start up.</p>
+    <p>Set flow context or global context properties on start up or as needed.</p>
+    <p>Allows you to store configuration information in a single node or switch between
+    multiple configurations at runtime.</p>
+    <p>If the node is Active, configuration properties to be loaded into the flow or global
+    contexts at start up.  Configuration properties will be set before any flows are started.</p>
+    <p>Pressing the button on the left side of the node will apply the configuration properties
+    contained in that Config node.  This allows you to have alternate configurations
+    and manually switch between them as needed.</p>
+    <p><b>Caution:</b>Be aware that doing a full deploy will trigger the active
+    Config nodes, where as Modified Flow and Node deploys will only trigger
+    active Config nodes if they have been modified.</p>
+    <p><b>Note:</b> Conflicting settings in different Config nodes will cause indeterminate
+    results if all are made Active.</p>
 </script>
 
 <script type="text/javascript">
