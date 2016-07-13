@@ -30,38 +30,38 @@ module.exports = function(RED) {
 
         node.configs = n.configs;
 
-        if (n.active) configure(node);
-
-    };
-
-    function configure(node) {
-
-        node.configs.forEach( function(config) {
-            if (config.tot === 'num') {
-                config.to = Number(config.to);
-            } else if (config.tot === 'json') {
-                try {
-                    config.to = JSON.parse(config.to);
-                } catch(e2) {
-                    this.error("Invalid JSON");
-                    return;
+        node.configure = function(node) {
+            node.configs.forEach( function(config) {
+                if (config.tot === 'num') {
+                    config.to = Number(config.to);
+                } else if (config.tot === 'json') {
+                    try {
+                        config.to = JSON.parse(config.to);
+                    } catch(e2) {
+                        this.error("Invalid JSON");
+                        return;
+                    }
+                } else if (config.tot === 'bool') {
+                    config.to = /^true$/i.test(rule.to);
+                } else if (config.tot === 'date') {
+                    config.to = Date.now();
                 }
-            } else if (config.tot === 'bool') {
-                config.to = /^true$/i.test(rule.to);
-            } else if (config.tot === 'date') {
-                config.to = Date.now();
-            }
 
-            var target;
-            if (config.pt === 'flow') {
-                target = node.context().flow;
-            } else if (config.pt === 'global') {
-                target = node.context().global;
-            }
-            if (target) {
-                target.set(config.p,config.to);
-            }
-        });
+                var target;
+                if (config.pt === 'flow') {
+                    target = node.context().flow;
+                } else if (config.pt === 'global') {
+                    target = node.context().global;
+                }
+                if (target) {
+                    target.set(config.p,config.to);
+                }
+            });
+
+            if (n.active) node.configure(node);
+
+        };
+
     }
     RED.nodes.registerType("config", ConfigNode);
 
