@@ -32,6 +32,8 @@ module.exports = function(RED) {
 
         node.configure = function(node) {
             node.properties.forEach( function(property) {
+
+                RED.util.evaluateNodeProperty(property.to, property.tot, node, msg)
                 if (property.tot === 'num') {
                     property.to = Number(property.to);
                 } else if (property.tot === 'json') {
