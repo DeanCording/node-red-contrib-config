@@ -43,7 +43,7 @@
         category: 'function',
         defaults: {
             name: {value:""},
-            configs:{value:[{p:"",pt:"flow",to:"",tot:"str"}]},
+            properties:{value:[{p:"",pt:"flow",to:"",tot:"str"}]},
             active:{value:true}
         },
         inputs: 0,
@@ -63,10 +63,9 @@
 
             }
             $('#node-input-config-container').css('min-height','300px').css('min-width','450px').editableList({
-                addItem: function(container,i,opt) {
-                    var config = opt;
-                    if (!config.hasOwnProperty('p')) {
-                        config = {p:"",pt:"flow",to:"",tot:"string"};
+                addItem: function(container,i,property) {
+                    if (!property.hasOwnProperty('p')) {
+                        property = {p:"",pt:"flow",to:"",tot:"string"};
                     }
 
                     var row1 = $('<div/>').appendTo(container);
@@ -78,17 +77,15 @@
                         .appendTo(row1)
                         .typedInput({types:['flow','global']});
 
-                    $('<div/>',{style:"display:inline-block;text-align:right; width:120px; padding-right:10px; box-sizing:border-box;"})
-                        .text("Value")
-                        .appendTo(row2);
-                    var propertyValue = $('<input/>',{style:"width:270px",class:"node-input-config-property-value",type:"text"})
+                    $('<label/>',{for:"node-input-config-property-value",style:"width:110px; margin-right:10px;"}).text("Value").appendTo(row2);
+                    var propertyValue = $('<input/>',{style:"width:250px",class:"node-input-config-property-value",type:"text"})
                         .appendTo(row2)
                         .typedInput({types:['str','num','bool','json','date']});
 
-                    propertyName.typedInput('value',config.p);
-                    propertyName.typedInput('type',config.pt);
-                    propertyValue.typedInput('value',config.to);
-                    propertyValue.typedInput('type',config.tot);
+                    propertyName.typedInput('value',property.p);
+                    propertyName.typedInput('type',property.pt);
+                    propertyValue.typedInput('value',property.to);
+                    propertyValue.typedInput('type',property.tot);
 
                     var newWidth = $("#node-input-config-container").width();
                     resizeConfig(container);
@@ -98,25 +95,24 @@
                 sortable: false
             });
 
-            for (var i=0;i<this.configs.length;i++) {
-                var config = this.configs[i];
-                $("#node-input-config-container").editableList('addItem',config);
+            for (var i=0;i<this.properties.length;i++) {
+                var property = this.properties[i];
+                $("#node-input-config-container").editableList('addItem',property);
             }
         },
         oneditsave: function() {
-            var configs = $("#node-input-config-container").editableList('items');
-            var configset;
+            var properties = $("#node-input-config-container").editableList('items');
             var node = this;
-            node.configs= [];
-            configs.each(function(i) {
-                var config = $(this);
-                var r = {
-                    p:config.find(".node-input-config-property-name").typedInput('value'),
-                    pt:config.find(".node-input-config-property-name").typedInput('type'),
-                    to:config.find(".node-input-config-property-value").typedInput('value'),
-                    tot:config.find(".node-input-config-property-value").typedInput('type')
+            node.properties= [];
+            properties.each(function(i) {
+                var property = $(this);
+                var p = {
+                    p:property.find(".node-input-config-property-name").typedInput('value'),
+                    pt:property.find(".node-input-config-property-name").typedInput('type'),
+                    to:property.find(".node-input-config-property-value").typedInput('value'),
+                    tot:property.find(".node-input-config-property-value").typedInput('type')
                 };
-                node.configs.push(r);
+                node.properties.push(p);
             });
         },
         oneditresize: function(size) {
