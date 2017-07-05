@@ -43,6 +43,10 @@ module.exports = function(RED) {
             });
         };
         if (n.active) node.configure(node);
+	
+	node.on("input", function(msg) {
+		node.configure(node);
+	}
     }
     RED.nodes.registerType("config", ConfigNode);
 

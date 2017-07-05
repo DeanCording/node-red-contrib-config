@@ -37,6 +37,8 @@
     multiple configurations at runtime.</p>
     <p>If the node is Active, configuration properties to be loaded into the flow or global
     contexts at start up.  Configuration properties will be set before any flows are started.</p>
+    <p>If the node receives any message, it will apply it apply the configuration properties contained in that 
+    Config node.  This allows you to have alternate configurations and programatically switch between them as needed.</p>
     <p>Pressing the button on the left side of the node will apply the configuration properties
     contained in that Config node.  This allows you to have alternate configurations
     and manually switch between them as needed.</p>
@@ -56,7 +58,7 @@
             properties:{value:[{p:"",pt:"flow",to:"",tot:"str"}]},
             active:{value:true}
         },
-        inputs: 0,
+        inputs: 1,
         outputs: 0,
         icon: "inject.png",
         label: function() {
