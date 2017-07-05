@@ -46,7 +46,7 @@ module.exports = function(RED) {
 	
 	node.on("input", function(msg) {
 		node.configure(node);
-	}
+	});
     }
     RED.nodes.registerType("config", ConfigNode);
 
