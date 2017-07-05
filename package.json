@@ -1,6 +1,6 @@
 {
   "name": "node-red-contrib-config",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "A node-red node to set flow and global context values at start up.",
   "dependencies": {},
   "author": {
