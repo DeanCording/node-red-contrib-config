@@ -8,7 +8,7 @@ can store alternate configuration settings and switch between them at run time.
 If the Config node is Active, the configuration properties will be applied at 
 startup before any flows are started.
 
-If the node receives any message, it will apply it apply the configuration properties 
+If the node receives any message, it will apply the configuration properties
 contained in that Config node. The received message is discarded. This allows you to 
 have alternate configurations and programatically switch between them as needed.
 
