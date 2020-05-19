@@ -1,7 +1,7 @@
 # node-red-contrib-config
 A Node Red node for setting global and flow context properties at startup and during runtime.
 
-This node allows you to store configuration information in a central location and use it to set global and flow context properties at startup (initialization phase) or during run time. Multiple `config` nodes can be used to store alternate configuration settings and switch between them during run time.  
+This node allows you to store configuration information in a central location and use it to set global and flow context properties at startup (initialization phase) or during runtime. Multiple `config` nodes can be used to store alternate configuration settings and switch between them during runtime.  
 ![node-appearance](assets/node-appearance.png "Node appearance")  
 **Fig. 1:** Node appearance
 
