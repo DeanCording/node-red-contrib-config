@@ -54,6 +54,9 @@ The `config` node has no output data.
 
 <a name="example"></a>
 ## Example ##
+***
+**Remark**: Example flows are present in the examples subdirectory. In Node-RED they can be imported via the import function and then selecting *Examples* in the vertical tab menue.
+***
 
 The example flow shows an example where the global variable *PC_Stability*
 * is modified at startup (initial operation, only by the upper `config` node),
@@ -73,6 +76,3 @@ The  following figure shows the node configuration of the upper `config`node.
 <img src="assets/example1.png" title="Example flow" width="300" />
 
 **Fig. 4:** Example `Config` node properties
-
-
-**Remark**: Example flows are present in the examples subdirectory. In Node-RED they can be imported via the import function and then selecting *Examples* in the vertical tab menue.
