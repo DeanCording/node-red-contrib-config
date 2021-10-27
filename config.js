@@ -41,6 +41,9 @@ module.exports = function(RED) {
                     node.context().global.set(property.p,value);
                 }
             });
+            setTimeout(function() {
+                node.send({payload: Date.now()});
+            }, 100);
         };
         if (n.active) node.configure(node);
 	
