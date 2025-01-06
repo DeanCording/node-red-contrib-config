@@ -50,7 +50,8 @@ This allows also to alter configurations **manually**.
 
 <a name="output"></a>
 ### Output ###
-The `config` node has no output data.
+A message with the current timestamp is emitted to the `config` node's output 100 ms after the configuration is applied.
+A short delay is needed for Node RED to finish configuring and wiring the nodes. 
 
 <a name="example"></a>
 ## Example ##
